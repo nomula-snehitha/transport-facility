@@ -1,0 +1,8 @@
+:host{display:block}
+.card{padding:12px;border-radius:8px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,0.06)}
+.controls{display:flex;gap:12px;align-items:flex-end}
+.rides{list-style:none;padding:0;margin:12px 0}
+.rides li{display:flex;justify-content:space-between;padding:8px;border-bottom:1px solid #f0f0f0}
+.row{color:#555;font-size:13px}
+button{padding:6px 10px;border-radius:6px;border:none;background:#1a73e8;color:white}
+.message{margin-top:8px;color:#d93025}

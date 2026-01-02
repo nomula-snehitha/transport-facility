@@ -1,0 +1,30 @@
+<section class="card">
+  <h3>Available Rides</h3>
+
+  <div class="controls">
+    <label>Filter
+      <select [(ngModel)]="filter" (ngModelChange)="refresh()">
+        <option value="All">All</option>
+        <option value="Car">Car</option>
+        <option value="Bike">Bike</option>
+      </select>
+    </label>
+    <label>Your Employee ID<input [(ngModel)]="employeeId" placeholder="Enter to book" /></label>
+  </div>
+
+  <div *ngIf="rides.length === 0">No rides found for the current time window.</div>
+
+  <ul class="rides">
+    <li *ngFor="let r of rides">
+      <div class="info">
+        <div class="row"><strong>{{r.vehicleType}}</strong> — {{r.vehicleNo}} — {{r.vacantSeats}} seats</div>
+        <div class="row">{{ r.pickup }} → {{ r.destination }} • {{ r.timeISO | date:'shortTime' }}</div>
+      </div>
+      <div class="actions">
+        <button (click)="book(r.id)">Book</button>
+      </div>
+    </li>
+  </ul>
+
+  <div class="message" *ngIf="message">{{ message }}</div>
+</section>

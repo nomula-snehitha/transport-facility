@@ -1,0 +1,21 @@
+<section class="card">
+  <h3>Add a Ride</h3>
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <label>Creator Employee ID<input formControlName="creatorEmployeeId" /></label>
+    <label>Vehicle Type
+      <select formControlName="vehicleType">
+        <option value="Car">Car</option>
+        <option value="Bike">Bike</option>
+      </select>
+    </label>
+    <label>Vehicle No<input formControlName="vehicleNo" /></label>
+    <label>Vacant Seats<input type="number" formControlName="vacantSeats" /></label>
+    <label>Time <input type="time" formControlName="time" /></label>
+    <label>Pick-up Point<input formControlName="pickup" /></label>
+    <label>Destination<input formControlName="destination" /></label>
+
+    <button type="submit" [disabled]="form.invalid">Add Ride</button>
+  </form>
+
+  <div class="message" *ngIf="message">{{ message }}</div>
+</section>
