@@ -1,5 +1,6 @@
 <section class="card">
   <h3>Add a Ride</h3>
+
   <form [formGroup]="form" (ngSubmit)="submit()">
     <label>Creator Employee ID<input formControlName="creatorEmployeeId" /></label>
     <label>Vehicle Type
@@ -12,7 +13,16 @@
     <label>Vacant Seats<input type="number" formControlName="vacantSeats" /></label>
     <label>Time <input type="time" formControlName="time" /></label>
     <label>Pick-up Point<input formControlName="pickup" /></label>
+    <div *ngIf="form.get('pickup')?.touched && form.get('pickup')?.invalid" class="field-error">
+  <span *ngIf="form.get('pickup')?.errors?.['required']">Pick-up point is required.</span>
+  <span *ngIf="form.get('pickup')?.errors?.['pattern']">Only letters and spaces allowed.</span>
+</div>
+   
     <label>Destination<input formControlName="destination" /></label>
+    <div *ngIf="form.get('destination')?.touched && form.get('destination')?.invalid" class="field-error">
+  <span *ngIf="form.get('destination')?.errors?.['required']">Destination is required.</span>
+  <span *ngIf="form.get('destination')?.errors?.['pattern']">Only letters and spaces allowed.</span>
+</div>
 
     <button type="submit" [disabled]="form.invalid">Add Ride</button>
   </form>

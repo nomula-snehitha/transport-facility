@@ -88,4 +88,65 @@ describe('RideService', () => {
     service.bookRide(r.id, 'EMP2');
     expect(() => service.bookRide(r.id, 'EMP2')).toThrow();
   });
+
+  it('should only return rides within +/-60 minutes of now and same-day', () => {
+    const now = new Date();
+
+    service.addRide({
+      creatorEmployeeId: 'EMP_A',
+      vehicleType: 'Car',
+      vehicleNo: 'A1',
+      vacantSeats: 1,
+      timeISO: new Date(now.getTime() - 30 * 60000).toISOString(),
+      pickup: 'X',
+      destination: 'Y'
+    });
+
+    service.addRide({
+      creatorEmployeeId: 'EMP_B',
+      vehicleType: 'Car',
+      vehicleNo: 'B1',
+      vacantSeats: 1,
+      timeISO: new Date(now.getTime() + 30 * 60000).toISOString(),
+      pickup: 'X',
+      destination: 'Y'
+    });
+
+    service.addRide({
+      creatorEmployeeId: 'EMP_C',
+      vehicleType: 'Car',
+      vehicleNo: 'C1',
+      vacantSeats: 1,
+      timeISO: new Date(now.getTime() + 90 * 60000).toISOString(),
+      pickup: 'X',
+      destination: 'Y'
+    });
+    const avail = service.getAvailableRides(now);
+    expect(avail.length).toBe(2);
+  });
+
+  it('should filter by vehicle type', () => {
+    service.clearAll();
+    const now = new Date().toISOString();
+    service.addRide({
+      creatorEmployeeId: 'E1',
+      vehicleType: 'Bike',
+      vehicleNo: 'BK1',
+      vacantSeats: 1,
+      timeISO: now,
+      pickup: 'A',
+      destination: 'B'
+    });
+    service.addRide({
+      creatorEmployeeId: 'E2',
+      vehicleType: 'Car',
+      vehicleNo: 'C1',
+      vacantSeats: 1,
+      timeISO: now,
+      pickup: 'A',
+      destination: 'B'
+    });
+    const bikes = service.getAvailableRides(new Date(), 'Bike');
+    expect(bikes.every(r => r.vehicleType === 'Bike')).toBeTrue();
+  });
 });

@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Ride, VehicleType } from '../models/ride.model';
+import { Subject } from 'rxjs';
 
 const STORAGE_KEY = 'rides_v1';
 
 @Injectable({ providedIn: 'root' })
 export class RideService {
   private rides: Ride[] = [];
+  private changes = new Subject<void>();
+  public changes$ = this.changes.asObservable();
 
   constructor() {
     this.rides = this.read();
@@ -28,7 +31,7 @@ export class RideService {
   }
 
   addRide(payload: Omit<Ride, 'id' | 'bookings'>) {
-    // Employee ID uniqueness for creator across rides
+
     if (this.rides.some(r => r.creatorEmployeeId === payload.creatorEmployeeId)) {
       throw new Error('Employee ID already used to add a ride');
     }
@@ -39,6 +42,7 @@ export class RideService {
     };
     this.rides.push(ride);
     this.write();
+    this.changes.next();
     return ride;
   }
 
@@ -67,11 +71,13 @@ export class RideService {
     ride.vacantSeats -= 1;
     ride.bookings.push(employeeId);
     this.write();
+    this.changes.next();
     return ride;
   }
 
   clearAll() {
     this.rides = [];
     this.write();
+    this.changes.next();
   }
 }

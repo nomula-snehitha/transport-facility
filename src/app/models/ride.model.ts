@@ -6,8 +6,8 @@ export interface Ride {
   vehicleType: VehicleType;
   vehicleNo: string;
   vacantSeats: number;
-  timeISO: string; // ISO string of today's date + time
+  timeISO: string; 
   pickup: string;
   destination: string;
-  bookings: string[]; // employeeIds
+  bookings: string[];
 }

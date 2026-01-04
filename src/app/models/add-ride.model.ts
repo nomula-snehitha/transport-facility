@@ -6,7 +6,7 @@ export interface AddRideForm {
   vehicleType: VehicleType;
   vehicleNo: string;
   vacantSeats: number | string;
-  time: string; // HH:mm
+  time: string;
   pickup: string;
   destination: string;
 }

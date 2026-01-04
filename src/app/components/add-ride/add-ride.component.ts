@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RideService } from '../../services/ride.service';
@@ -13,19 +13,39 @@ import { timeToTodayISO } from '../../utils/time.util';
   styleUrls: ['./add-ride.component.css']
 })
 export class AddRideComponent {
+  @Output() added = new EventEmitter<void>();
+
   form = this.fb.group({
     creatorEmployeeId: ['', Validators.required],
     vehicleType: ['Car', Validators.required],
     vehicleNo: ['', Validators.required],
     vacantSeats: [1, [Validators.required, Validators.min(1)]],
     time: ['', Validators.required], // HH:mm
-    pickup: ['', Validators.required],
-    destination: ['', Validators.required]
+    pickup: ['', Validators.required, Validators.pattern(/^[A-Za-z\s]+$/)],
+    destination: ['', Validators.required, Validators.pattern(/^[A-Za-z\s]+$/)]
   });
 
   message = '';
 
-  constructor(private fb: FormBuilder, private rideService: RideService) {}
+  constructor(private fb: FormBuilder, private rideService: RideService) {
+    
+  }
+
+  ngOnInit() {
+   
+  }
+
+  prefill() {
+    this.form.setValue({
+      creatorEmployeeId: 'DEMO1',
+      vehicleType: 'Car',
+      vehicleNo: 'DEMO-123',
+      vacantSeats: 2,
+      time: new Date().toTimeString().slice(0,5),
+      pickup: 'Office',
+      destination: 'Home'
+    });
+  }
 
   submit() {
     if (this.form.invalid) {
@@ -68,9 +88,10 @@ export class AddRideComponent {
       this.rideService.addRide(payload);
       this.message = 'Ride added successfully.';
       this.form.reset({ vehicleType: 'Car', vacantSeats: 1 });
+      this.added.emit();
     } catch (e: any) {
       this.message = e?.message || 'Error adding ride.';
-      console.error('Add ride error', e);
+     
     }
   }
 }

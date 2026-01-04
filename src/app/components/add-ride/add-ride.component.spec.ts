@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AddRideComponent } from './add-ride.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { of } from 'rxjs';
 import { RideService } from '../../services/ride.service';
 
 describe('AddRideComponent', () => {
@@ -16,12 +17,15 @@ describe('AddRideComponent', () => {
       providers: [{ provide: RideService, useValue: rideServiceSpy }]
     }).compileComponents();
 
+
+    rideServiceSpy.changes$ = of();
+
     fixture = TestBed.createComponent(AddRideComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('calls rideService.addRide with correct payload when form is valid', () => {
+  it('calls rideService.addRide with correct payload when form is valid and emits added', () => {
     component.form.setValue({
       creatorEmployeeId: 'EMP1',
       vehicleType: 'Car',
@@ -31,6 +35,9 @@ describe('AddRideComponent', () => {
       pickup: 'A',
       destination: 'B'
     });
+
+    let emitted = false;
+    component.added.subscribe(() => emitted = true);
 
     component.submit();
 
@@ -42,5 +49,6 @@ describe('AddRideComponent', () => {
     expect(arg.pickup).toBe('A');
     expect(arg.destination).toBe('B');
     expect(arg.timeISO).toBeDefined();
+    expect(emitted).toBeTrue();
   });
 });

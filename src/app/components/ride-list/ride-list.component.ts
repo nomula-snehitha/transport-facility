@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RideService } from '../../services/ride.service';
 import { Ride, VehicleType } from '../../models/ride.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-ride-list',
@@ -11,16 +12,23 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './ride-list.component.html',
   styleUrls: ['./ride-list.component.css']
 })
-export class RideListComponent implements OnInit {
+export class RideListComponent implements OnInit, OnDestroy {
   rides: Ride[] = [];
   filter: VehicleType | 'All' = 'All';
   employeeId = '';
   message = '';
+  private sub: Subscription | null = null;
 
   constructor(private rideService: RideService) {}
 
   ngOnInit() {
     this.refresh();
+  
+    this.sub = this.rideService.changes$.subscribe(() => this.refresh());
+  }
+
+  ngOnDestroy() {
+    this.sub?.unsubscribe();
   }
 
   refresh() {
